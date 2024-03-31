@@ -1,3 +1,3 @@
-module github.com/beglaryh/optional
+module github.com/beglaryh/gocommon
 
-go 1.21
+go 1.22
