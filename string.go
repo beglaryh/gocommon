@@ -29,3 +29,16 @@ func (s String) Contains(sub string) bool {
 func (s String) Replace(oldStr string, newStr string) String {
 	return String(strings.Replace(string(s), oldStr, newStr, -1))
 }
+
+func (s String) Split(keyword string) []String {
+	s1 := strings.Split(string(s), keyword)
+	var s2 []String
+	for _, e := range s1 {
+		s2 = append(s2, String(e))
+	}
+	return s2
+}
+
+func (s String) Index(keyword string) int {
+	return strings.Index(string(s), keyword)
+}
