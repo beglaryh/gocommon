@@ -1,6 +1,9 @@
 package gocommon
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type String string
 
@@ -41,4 +44,8 @@ func (s String) Split(keyword string) []String {
 
 func (s String) Index(keyword string) int {
 	return strings.Index(string(s), keyword)
+}
+
+func (s String) Format(args ...any) String {
+	return String(fmt.Sprintf(string(s), args))
 }

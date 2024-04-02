@@ -14,6 +14,19 @@ func EmptyList[T any]() *List[T] {
 	return &l
 }
 
+func NewList[T any](t []T) *List[T] {
+	capacity := 10
+	if len(t) > capacity {
+		capacity = len(t) + (len(t) / 2)
+	}
+	l := List[T]{
+		elements: make([]T, capacity),
+		size:     len(t),
+	}
+	copy(l.elements, t)
+	return &l
+}
+
 func (l *List[T]) ToArray() []T {
 	return l.elements[0:l.size]
 }
