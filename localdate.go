@@ -71,6 +71,6 @@ func (d LocalDate) PlusYears(years int) LocalDate {
 func (d LocalDate) Equals(o LocalDate) bool {
 	return time.Time(d).Sub(time.Time(o)) == 0
 }
-func (d LocalDate) String() string {
-	return time.Time(d).Format(time.DateOnly)
+func (d LocalDate) String() String {
+	return String(time.Time(d).Format(time.DateOnly))
 }
