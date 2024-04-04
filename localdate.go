@@ -10,6 +10,11 @@ func NewLocalDate(year int, month time.Month, day int) LocalDate {
 	return LocalDate(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
 }
 
+func CurrentLocalDate() LocalDate {
+	t := time.Now()
+	return NewLocalDate(t.Year(), t.Month(), t.Day())
+}
+
 func ParseIsoDate(iso string) (LocalDate, error) {
 	d, err := time.Parse(time.DateOnly, iso)
 	return LocalDate(d), err
