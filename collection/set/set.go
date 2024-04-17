@@ -1,4 +1,4 @@
-package gocommon
+package set
 
 type Set[T comparable] struct {
 	set map[T]bool
