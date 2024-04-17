@@ -27,7 +27,7 @@ func NewLinkedList[T any]() LinkedList[T] {
 func (l *LinkedList[T]) Add(t ...T) error {
 	numberOfElements := len(t)
 	if l.limit != 0 && l.size+numberOfElements > l.limit {
-		return collection.ERROR_COLLECTION_LIMIT
+		return collection.ErrorCollectionLimit
 	}
 	for _, e := range t {
 		newNode := node[T]{value: e}

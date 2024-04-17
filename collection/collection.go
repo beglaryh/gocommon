@@ -12,5 +12,5 @@ type Collection[T any] interface {
 type CollectionError error
 
 var (
-	ERROR_COLLECTION_LIMIT = errors.New("collection limit reached. unable to add new element")
+	ErrorCollectionLimit = errors.New("collection limit reached. unable to add new element")
 )

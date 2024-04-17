@@ -68,7 +68,7 @@ func (l *ArrayList[T]) ToArray() []T {
 
 func (l *ArrayList[T]) Add(t ...T) error {
 	if l.limit != 0 && l.size == l.limit {
-		return collection.ERROR_COLLECTION_LIMIT
+		return collection.ErrorCollectionLimit
 	}
 	offset := l.size
 	for _, e := range t {
