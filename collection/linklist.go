@@ -1,8 +1,7 @@
-package list
+package collection
 
 import (
 	"github.com/beglaryh/gocommon"
-	"github.com/beglaryh/gocommon/collection"
 )
 
 type node[T any] struct {
@@ -27,7 +26,7 @@ func NewLinkedList[T any]() LinkedList[T] {
 func (l *LinkedList[T]) Add(t ...T) error {
 	numberOfElements := len(t)
 	if l.limit != 0 && l.size+numberOfElements > l.limit {
-		return collection.ErrorCollectionLimit
+		return ErrorCollectionLimit
 	}
 	for _, e := range t {
 		newNode := node[T]{value: e}
@@ -122,4 +121,20 @@ func (l *LinkedList[T]) Remove(index int) gocommon.Optional[T] {
 	l.size -= 1
 
 	return gocommon.With[T](element.value)
+}
+
+func (l *LinkedList[T]) ToArray() []T {
+	arr := make([]T, l.Size())
+	e := l.head
+	i := 0
+	for e != nil {
+		v := e.value
+		arr[i] = v
+		i += 1
+	}
+	return arr
+}
+
+func (l *LinkedList[T]) Stream() Stream[T] {
+	return StreamOf[T](l.ToArray())
 }

@@ -7,10 +7,11 @@ type Collection[T any] interface {
 	Size() int
 	IsEmpty() bool
 	Clear()
+	Stream() Stream[T]
 }
 
-type CollectionError error
+type Error error
 
 var (
-	ErrorCollectionLimit = errors.New("collection limit reached. unable to add new element")
+	ErrorCollectionLimit Error = errors.New("collection limit reached. unable to add new element")
 )

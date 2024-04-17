@@ -1,9 +1,8 @@
-package list
+package collection
 
 import (
 	"errors"
 	"github.com/beglaryh/gocommon"
-	"github.com/beglaryh/gocommon/collection"
 	"reflect"
 )
 
@@ -68,7 +67,7 @@ func (l *ArrayList[T]) ToArray() []T {
 
 func (l *ArrayList[T]) Add(t ...T) error {
 	if l.limit != 0 && l.size == l.limit {
-		return collection.ErrorCollectionLimit
+		return ErrorCollectionLimit
 	}
 	offset := l.size
 	for _, e := range t {
@@ -115,4 +114,8 @@ func (l *ArrayList[T]) IsEmpty() bool {
 
 func (l *ArrayList[T]) Equals(o *ArrayList[T]) bool {
 	return reflect.DeepEqual(l, o)
+}
+
+func (l *ArrayList[T]) Stream() Stream[T] {
+	return StreamOf[T](l.ToArray())
 }
