@@ -32,3 +32,7 @@ func (q *FifoQueue[T]) IsEmpty() bool {
 func (q *FifoQueue[T]) Clear() {
 	(*LinkedList[T])(q).Clear()
 }
+
+func (q *FifoQueue[T]) Stream() Stream[T] {
+	return (*LinkedList[T])(q).Stream()
+}
