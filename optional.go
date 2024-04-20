@@ -28,7 +28,7 @@ func (op Optional[T]) IsEmpty() bool {
 
 func (op Optional[T]) GetPointer() (*T, error) {
 	if op.value == nil {
-		return op.value, errors.New("empty optional")
+		return op.value, errors.New("empty gocommon")
 	}
 	return op.value, nil
 }
@@ -36,7 +36,7 @@ func (op Optional[T]) GetPointer() (*T, error) {
 func (op Optional[T]) Get() (T, error) {
 	if op.value == nil {
 		var t T
-		return t, errors.New("empty optional")
+		return t, errors.New("empty gocommon")
 	}
 	return *op.value, nil
 }

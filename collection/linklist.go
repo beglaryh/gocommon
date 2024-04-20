@@ -131,6 +131,7 @@ func (l *LinkedList[T]) ToArray() []T {
 		v := e.value
 		arr[i] = v
 		i += 1
+		e = e.next
 	}
 	return arr
 }
