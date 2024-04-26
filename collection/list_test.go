@@ -15,7 +15,7 @@ func TestArrayList(t *testing.T) {
 		t.Fail()
 	}
 
-	e, _ := l.Get(0).Get()
+	e, _ := l.Get(0)
 	if e != 1 {
 		t.Fail()
 	}
@@ -51,6 +51,24 @@ func TestArrayList(t *testing.T) {
 	if err == nil {
 		t.Fail()
 	}
+
+	l, _ = NewArrayList[int]()
+	_ = l.Add(1)
+	_ = l.Add(2)
+	e, _ = l.Remove(0)
+	if e != 1 && l.Size() != 1 {
+		t.Fail()
+	}
+
+	e, _ = l.Remove(-1)
+	if e != 2 && l.IsEmpty() {
+		t.Fail()
+	}
+
+	_, err = l.Remove(0)
+	if err == nil {
+		t.Fail()
+	}
 }
 
 func TestLinkedList(t *testing.T) {
@@ -61,12 +79,12 @@ func TestLinkedList(t *testing.T) {
 	if l.Size() != 1 {
 		t.Fail()
 	}
-	v, _ := l.Get(0).Get()
+	v, _ := l.Get(0)
 	if v != String("A") {
 		t.Fail()
 	}
 
-	v, _ = l.Get(-1).Get()
+	v, _ = l.Get(-1)
 	if v != String("A") {
 		t.Fail()
 	}
@@ -77,12 +95,12 @@ func TestLinkedList(t *testing.T) {
 		t.Fail()
 	}
 
-	v, _ = l.Get(1).Get()
+	v, _ = l.Get(1)
 	if v != String("B") {
 		t.Fail()
 	}
 
-	v, _ = l.Get(-1).Get()
+	v, _ = l.Get(-1)
 	if v != String("B") {
 		t.Fail()
 	}

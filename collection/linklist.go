@@ -1,7 +1,7 @@
 package collection
 
 import (
-	"github.com/beglaryh/gocommon"
+	"errors"
 )
 
 type node[T any] struct {
@@ -43,12 +43,12 @@ func (l *LinkedList[T]) Add(t ...T) error {
 	return nil
 }
 
-func (l *LinkedList[T]) get(index int) gocommon.Optional[node[T]] {
+func (l *LinkedList[T]) get(index int) (*node[T], error) {
 	if index < 0 {
 		index = l.size + index
 	}
 	if index >= l.size || index < 0 {
-		return gocommon.Empty[node[T]]()
+		return nil, errors.New("index out of bounds")
 	}
 
 	x := float32(index) / float32(l.size)
@@ -66,16 +66,16 @@ func (l *LinkedList[T]) get(index int) gocommon.Optional[node[T]] {
 
 		}
 	}
-	return gocommon.WithPointer[node[T]](element)
+	return element, nil
 }
 
-func (l *LinkedList[T]) Get(index int) gocommon.Optional[T] {
-	n := l.get(index)
-	if !n.IsPresent() {
-		return gocommon.Empty[T]()
+func (l *LinkedList[T]) Get(index int) (T, error) {
+	n, err := l.get(index)
+	if err != nil {
+		var t T
+		return t, err
 	}
-	element, _ := n.Get()
-	return gocommon.With[T](element.value)
+	return n.value, nil
 }
 
 func (l *LinkedList[T]) Clear() {
@@ -92,18 +92,18 @@ func (l *LinkedList[T]) IsEmpty() bool {
 	return l.Size() == 0
 }
 
-func (l *LinkedList[T]) Peek() gocommon.Optional[T] {
+func (l *LinkedList[T]) Peek() (T, error) {
 	return l.Get(0)
 }
 
-func (l *LinkedList[T]) Remove(index int) gocommon.Optional[T] {
+func (l *LinkedList[T]) Remove(index int) (T, error) {
 
-	optional := l.get(index)
-	if !optional.IsPresent() {
-		return gocommon.Empty[T]()
+	element, err := l.get(index)
+	if err != nil {
+		var t T
+		return t, err
 	}
 
-	element, _ := optional.GetPointer()
 	prev := element.prev
 	next := element.next
 
@@ -120,7 +120,7 @@ func (l *LinkedList[T]) Remove(index int) gocommon.Optional[T] {
 	}
 	l.size -= 1
 
-	return gocommon.With[T](element.value)
+	return element.value, nil
 }
 
 func (l *LinkedList[T]) ToArray() []T {

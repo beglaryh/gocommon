@@ -1,9 +1,5 @@
 package collection
 
-import (
-	"github.com/beglaryh/gocommon"
-)
-
 type FifoQueue[T any] LinkedList[T]
 
 func NewFifoQueue[T any]() *FifoQueue[T] {
@@ -13,11 +9,11 @@ func NewFifoQueue[T any]() *FifoQueue[T] {
 func (q *FifoQueue[T]) Add(t ...T) error {
 	return (*LinkedList[T])(q).Add(t...)
 }
-func (q *FifoQueue[T]) Peek() gocommon.Optional[T] {
+func (q *FifoQueue[T]) Peek() (T, error) {
 	return (*LinkedList[T])(q).Get(0)
 }
 
-func (q *FifoQueue[T]) Remove() gocommon.Optional[T] {
+func (q *FifoQueue[T]) Remove() (T, error) {
 	return (*LinkedList[T])(q).Remove(0)
 }
 

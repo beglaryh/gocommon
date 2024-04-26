@@ -10,13 +10,13 @@ func TestFifoQueue(t *testing.T) {
 		t.Fail()
 	}
 
-	peek, err := fifo.Peek().Get()
+	peek, err := fifo.Peek()
 
 	if err != nil || peek != 1 {
 		t.Fail()
 	}
 
-	pop, err := fifo.Remove().Get()
+	pop, err := fifo.Remove()
 	if err != nil || pop != 1 {
 		t.Fail()
 	}

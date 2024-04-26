@@ -2,7 +2,6 @@ package collection
 
 import (
 	"errors"
-	"github.com/beglaryh/gocommon"
 	"reflect"
 )
 
@@ -84,19 +83,37 @@ func (l *ArrayList[T]) Add(t ...T) error {
 	return nil
 }
 
-func (l *ArrayList[T]) Remove(index int) gocommon.Optional[T] {
-	return gocommon.Empty[T]()
+func (l *ArrayList[T]) Remove(index int) (T, error) {
+	t, err := l.Get(index)
+	if err != nil {
+		return t, err
+	}
+	if index < 0 {
+		index = l.size + index
+	}
+
+	for i := range l.size - index {
+		if (i + index + 1) < l.size {
+			l.elements[i+index] = l.elements[i+index+1]
+		} else if i == l.size-1 {
+			var t T
+			l.elements[i] = t
+		}
+	}
+	l.size -= 1
+	return t, nil
 }
 
-func (l *ArrayList[T]) Get(i int) gocommon.Optional[T] {
+func (l *ArrayList[T]) Get(i int) (T, error) {
 	if i < 0 {
 		i = l.Size() + i
 	}
 	if i >= l.Size() {
-		return gocommon.Empty[T]()
+		var t T
+		return t, ErrorCollectionIndexOutOfBounds
 	}
 
-	return gocommon.WithPointer[T](&l.elements[i])
+	return l.elements[i], nil
 }
 
 func (l *ArrayList[T]) Clear() {
