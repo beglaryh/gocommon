@@ -1,61 +1,20 @@
-package collection
+package arraylist
 
 import (
-	"errors"
+	"github.com/beglaryh/gocommon/collection/collection_errors"
+	"github.com/beglaryh/gocommon/collection/stream"
 	"reflect"
 )
 
-type ArrayList[T any] struct {
+type ArrayList[T comparable] struct {
 	elements []T
 	size     int
 	limit    int
 }
 
-type ArrayListOption[T any] func(*ArrayList[T]) error
-
-func ArrayListWithLimit[T any](limit int) ArrayListOption[T] {
-	return func(l *ArrayList[T]) error {
-		if limit < 1 {
-			return errors.New("invalid limit. expecting greater than 0")
-
-		}
-		l.limit = limit
-		return nil
-	}
-}
-
-func ArrayListWithInitialCapacity[T any](capacity int) ArrayListOption[T] {
-	return func(l *ArrayList[T]) error {
-		if capacity < 1 {
-			return errors.New("invalid initial capacity. expecting greater than 0")
-		}
-		l.elements = make([]T, capacity)
-		return nil
-	}
-}
-
-func ArrayListWithSlice[T any](slice []T) ArrayListOption[T] {
-	return func(l *ArrayList[T]) error {
-		if l.limit != 0 && l.limit < len(slice) {
-			return errors.New("list limit too small for given slice")
-		}
-		l.elements = make([]T, len(slice)+(len(slice)/2))
-		copy(l.elements, slice)
-		l.size = len(slice)
-		return nil
-	}
-}
-
-func NewArrayList[T any](options ...ArrayListOption[T]) (*ArrayList[T], error) {
+func New[T comparable]() (*ArrayList[T], error) {
 	al := &ArrayList[T]{
 		elements: make([]T, 10),
-	}
-
-	for _, option := range options {
-		err := option(al)
-		if err != nil {
-			return nil, err
-		}
 	}
 	return al, nil
 }
@@ -66,7 +25,7 @@ func (l *ArrayList[T]) ToArray() []T {
 
 func (l *ArrayList[T]) Add(t ...T) error {
 	if l.limit != 0 && l.size == l.limit {
-		return ErrorCollectionLimit
+		return collection_errors.LimitExceeded
 	}
 	offset := l.size
 	for _, e := range t {
@@ -104,13 +63,23 @@ func (l *ArrayList[T]) Remove(index int) (T, error) {
 	return t, nil
 }
 
+func (l *ArrayList[T]) RemoveValue(t T) int {
+	for i, v := range l.elements {
+		if v == t {
+			_, _ = l.Remove(i)
+			return i
+		}
+	}
+	return -1
+}
+
 func (l *ArrayList[T]) Get(i int) (T, error) {
 	if i < 0 {
 		i = l.Size() + i
 	}
 	if i >= l.Size() {
 		var t T
-		return t, ErrorCollectionIndexOutOfBounds
+		return t, collection_errors.IndexOutOfBounds
 	}
 
 	return l.elements[i], nil
@@ -133,6 +102,6 @@ func (l *ArrayList[T]) Equals(o *ArrayList[T]) bool {
 	return reflect.DeepEqual(l, o)
 }
 
-func (l *ArrayList[T]) Stream() Stream[T] {
-	return StreamOf[T](l.ToArray())
+func (l *ArrayList[T]) Stream() stream.Stream[T] {
+	return stream.Of[T](l.ToArray())
 }

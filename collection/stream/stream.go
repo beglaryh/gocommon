@@ -1,14 +1,15 @@
-package collection
+package stream
 
 import (
-	"github.com/beglaryh/gocommon"
+	"github.com/beglaryh/gocommon/collection/slice"
+	"github.com/beglaryh/gocommon/optional"
 )
 
-type Stream[T any] struct {
+type Stream[T comparable] struct {
 	ts []T
 }
 
-func StreamOf[T any](ts []T) Stream[T] {
+func Of[T comparable](ts []T) Stream[T] {
 	return Stream[T]{ts: ts}
 }
 
@@ -22,7 +23,7 @@ func (stream Stream[T]) Filter(filter func(t T) bool) Stream[T] {
 	return ns
 }
 
-func Map[F, T any](fs []F, mapper func(f F) T) Stream[T] {
+func Map[F, T comparable](fs []F, mapper func(f F) T) Stream[T] {
 	ns := Stream[T]{}
 	for _, e := range fs {
 		nv := mapper(e)
@@ -31,7 +32,7 @@ func Map[F, T any](fs []F, mapper func(f F) T) Stream[T] {
 	return ns
 }
 
-func FlatMap[T any](input [][]T) Stream[T] {
+func FlatMap[T comparable](input [][]T) Stream[T] {
 	var ts []T
 	for _, array := range input {
 		ts = append(ts, array...)
@@ -39,7 +40,7 @@ func FlatMap[T any](input [][]T) Stream[T] {
 	return Stream[T]{ts: ts}
 }
 
-func GroupBy[K comparable, T any](ts []T, getKey func(t T) K) map[K][]T {
+func GroupBy[K comparable, T comparable](ts []T, getKey func(t T) K) map[K][]T {
 	response := map[K][]T{}
 	for _, t := range ts {
 		key := getKey(t)
@@ -53,7 +54,7 @@ func (stream Stream[T]) Peek(peekFunc func(t T)) Stream[T] {
 	return stream
 }
 
-func peek[T any](s Stream[T], peekFunc func(t T)) {
+func peek[T comparable](s Stream[T], peekFunc func(t T)) {
 	for _, t := range s.ts {
 		peekFunc(t)
 	}
@@ -94,11 +95,11 @@ func (stream Stream[T]) NoneMatch(anyFunction func(t T) bool) bool {
 	return true
 }
 
-func (stream Stream[T]) FindFirst() gocommon.Optional[T] {
+func (stream Stream[T]) FindFirst() optional.Optional[T] {
 	if len(stream.ts) == 0 {
-		return gocommon.Empty[T]()
+		return optional.Empty[T]()
 	}
-	return gocommon.With[T](stream.ts[0])
+	return optional.With[T](stream.ts[0])
 }
 
 func (stream Stream[T]) ForEach(forEach func(t T)) {
@@ -139,11 +140,6 @@ func mergeSort[T any](es []T, compare func(a, b T) bool) []T {
 	return sorted
 }
 
-func (stream Stream[T]) Slice() []T {
+func (stream Stream[T]) Slice() slice.Slice[T] {
 	return stream.ts
-}
-
-func (stream Stream[T]) ToList() List[T] {
-	al, _ := NewArrayList[T](ArrayListWithSlice(stream.ts))
-	return (List[T])(al)
 }

@@ -1,12 +1,13 @@
 package gocommon
 
 import (
+	"github.com/beglaryh/gocommon/optional"
 	"testing"
 )
 
 func TestOptional(t *testing.T) {
 	a := 1
-	op := With[int](a)
+	op := optional.With[int](a)
 	if op.IsEmpty() {
 		t.Fail()
 	}
@@ -16,7 +17,7 @@ func TestOptional(t *testing.T) {
 		t.Fail()
 	}
 
-	op = WithPointer[int](nil)
+	op = optional.WithPointer[int](nil)
 	if op.IsPresent() {
 		t.Fail()
 	}

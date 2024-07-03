@@ -1,23 +1,25 @@
-package collection
+package linkedlist
 
 import (
 	"errors"
+	"github.com/beglaryh/gocommon/collection/collection_errors"
+	"github.com/beglaryh/gocommon/collection/stream"
 )
 
-type node[T any] struct {
+type node[T comparable] struct {
 	value T
 	next  *node[T]
 	prev  *node[T]
 }
 
-type LinkedList[T any] struct {
+type LinkedList[T comparable] struct {
 	head  *node[T]
 	tail  *node[T]
 	size  int
 	limit int
 }
 
-func NewLinkedList[T any]() LinkedList[T] {
+func New[T comparable]() LinkedList[T] {
 	return LinkedList[T]{
 		size: 0,
 	}
@@ -26,7 +28,7 @@ func NewLinkedList[T any]() LinkedList[T] {
 func (l *LinkedList[T]) Add(t ...T) error {
 	numberOfElements := len(t)
 	if l.limit != 0 && l.size+numberOfElements > l.limit {
-		return ErrorCollectionLimit
+		return collection_errors.LimitExceeded
 	}
 	for _, e := range t {
 		newNode := node[T]{value: e}
@@ -123,6 +125,21 @@ func (l *LinkedList[T]) Remove(index int) (T, error) {
 	return element.value, nil
 }
 
+func (l *LinkedList[T]) RemoveValue(t T) int {
+	i := 0
+	n := l.head
+	for n != nil && n.value != t {
+		n = n.next
+		i += 1
+	}
+
+	if n == nil {
+		return -1
+	}
+	_, _ = l.Remove(i) // TODO can optimize
+	return i
+}
+
 func (l *LinkedList[T]) ToArray() []T {
 	arr := make([]T, l.Size())
 	e := l.head
@@ -136,6 +153,6 @@ func (l *LinkedList[T]) ToArray() []T {
 	return arr
 }
 
-func (l *LinkedList[T]) Stream() Stream[T] {
-	return StreamOf[T](l.ToArray())
+func (l *LinkedList[T]) Stream() stream.Stream[T] {
+	return stream.Of[T](l.ToArray())
 }

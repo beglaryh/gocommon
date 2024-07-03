@@ -1,6 +1,8 @@
-package collection
+package fifo
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFifoQueue(t *testing.T) {
 	fifo := NewFifoQueue[int]()

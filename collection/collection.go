@@ -1,18 +1,12 @@
 package collection
 
-import "errors"
+import "github.com/beglaryh/gocommon/collection/stream"
 
-type Collection[T any] interface {
+type Collection[T comparable] interface {
 	Add(t ...T) error
 	Size() int
 	IsEmpty() bool
 	Clear()
-	Stream() Stream[T]
+	Stream() stream.Stream[T]
+	ToArray() []T
 }
-
-type Error error
-
-var (
-	ErrorCollectionLimit            Error = errors.New("collection limit reached. unable to add new element")
-	ErrorCollectionIndexOutOfBounds Error = errors.New("index out of bounds")
-)

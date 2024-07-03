@@ -1,4 +1,4 @@
-package gocommon
+package optional
 
 import "errors"
 
