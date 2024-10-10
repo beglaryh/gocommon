@@ -1,7 +1,6 @@
 package stream
 
 import (
-	"github.com/beglaryh/gocommon/collection/slice"
 	"github.com/beglaryh/gocommon/optional"
 )
 
@@ -52,6 +51,10 @@ func GroupBy[K comparable, T comparable](ts []T, getKey func(t T) K) map[K][]T {
 func (stream Stream[T]) Peek(peekFunc func(t T)) Stream[T] {
 	go peek(stream, peekFunc)
 	return stream
+}
+
+func (stream Stream[T]) Slice() []T {
+	return stream.ts
 }
 
 func peek[T comparable](s Stream[T], peekFunc func(t T)) {
@@ -138,8 +141,4 @@ func mergeSort[T any](es []T, compare func(a, b T) bool) []T {
 		}
 	}
 	return sorted
-}
-
-func (stream Stream[T]) Slice() slice.Slice[T] {
-	return stream.ts
 }
