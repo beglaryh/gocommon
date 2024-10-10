@@ -11,6 +11,6 @@ type Map[K comparable, V any] interface {
 	Remove(k K) optional.Optional[V]
 	Values() []V
 	Contains(k K) bool
-	Compute(k K, func(k K, v optional.Optional[V]) optional.Optional[V]) optional.Optional[V]
-	ComputeIfAbsent(k K, func(k K, v optional.Optional[V]) optional.Optional[V]) optional.Optional[V]
+	Compute(k K, f func(k K, v optional.Optional[V]) optional.Optional[V]) optional.Optional[V]
+	ComputeIfAbsent(k K, f func(k K, v optional.Optional[V]) optional.Optional[V]) optional.Optional[V]
 }
