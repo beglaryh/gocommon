@@ -13,7 +13,7 @@ type LinkedHashMap[K comparable, V any] struct {
 
 func New[K comparable, V any]() LinkedHashMap[K, V] {
 	return LinkedHashMap[K, V]{
-		keys: linkedlist.NewLinkedList[K](),
+		keys: linkedlist.New[K](),
 	}
 }
 

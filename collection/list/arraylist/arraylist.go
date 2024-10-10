@@ -1,9 +1,10 @@
 package arraylist
 
 import (
+	"reflect"
+
 	"github.com/beglaryh/gocommon/collection/collection_errors"
 	"github.com/beglaryh/gocommon/collection/stream"
-	"reflect"
 )
 
 type ArrayList[T comparable] struct {

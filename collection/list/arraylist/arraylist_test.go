@@ -2,9 +2,10 @@ package arraylist
 
 import (
 	"errors"
-	"github.com/beglaryh/gocommon/collection/collection_errors"
 	"reflect"
 	"testing"
+
+	"github.com/beglaryh/gocommon/collection/collection_errors"
 )
 
 func TestArrayList(t *testing.T) {
@@ -59,12 +60,12 @@ func TestArrayList(t *testing.T) {
 }
 
 func TestBuilder(t *testing.T) {
-	l, err := NewBuilder[int]().WithElements([]int{1, 2}).WithLimit(1).Build()
+	_, err := NewBuilder[int]().WithElements([]int{1, 2}).WithLimit(1).Build()
 	if !errors.Is(err, collection_errors.LimitExceeded) {
 		t.Fail()
 	}
 
-	l, _ = NewBuilder[int]().WithLimit(1).Build()
+	l, _ := NewBuilder[int]().WithLimit(1).Build()
 	_ = l.Add(1)
 	err = l.Add(2)
 	if !errors.Is(err, collection_errors.LimitExceeded) {
