@@ -65,12 +65,15 @@ func (pq *PriorityQueue[T]) Peek() (T, error) {
 }
 
 func (pq *PriorityQueue[T]) Poll() (T, error) {
-	peek, err := pq.Peek()
-	if err != nil {
-		return peek, err
+	node := pq.head
+
+	if node == nil {
+		var t T
+		return t, errors.New("queue is empty")
 	}
-	// TODO
-	return peek, nil
+
+	pq.removeAndReorder(node)
+	return node.Value, nil
 }
 
 func (pq *PriorityQueue[T]) Size() int {
@@ -79,11 +82,6 @@ func (pq *PriorityQueue[T]) Size() int {
 
 func (pq *PriorityQueue[T]) IsEmpty() bool {
 	return pq.size == 0
-}
-
-func (pq *PriorityQueue[T]) Poll() (T, error) {
-	var t T
-	return t, nil
 }
 
 func (pq *PriorityQueue[T]) reorder() {
@@ -106,4 +104,33 @@ func (pq *PriorityQueue[T]) reorder() {
 		parent = node.Parent
 	}
 
+}
+
+func (pq *PriorityQueue[T]) removeAndReorder(node *treenode.TreeNode[T]) {
+	left := node.Left
+	right := node.Right
+	var selected *treenode.TreeNode[T]
+
+	if left != nil && right != nil {
+		comp := pq.comparator(left.Value, right.Value)
+		if comp > 0 {
+			selected = left
+			pq.removeAndReorder(left)
+			left.Right = right
+			right.Parent = left
+		} else {
+			selected = right
+			pq.removeAndReorder(right)
+			right.Left = left
+			left.Parent = right
+		}
+	} else if left != nil {
+		selected = left
+	} else if right != nil {
+		selected = right
+	}
+
+	if pq.head == node {
+		pq.head = selected
+	}
 }

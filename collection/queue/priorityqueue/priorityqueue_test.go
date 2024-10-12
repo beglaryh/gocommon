@@ -30,4 +30,9 @@ func TestMaxHeap(t *testing.T) {
 		t.Fail()
 	}
 
+	v, _ := queue.Poll()
+	if v != 4 && queue.Size() != 3 {
+		t.Fail()
+	}
+
 }
