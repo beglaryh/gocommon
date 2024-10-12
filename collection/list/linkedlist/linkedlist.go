@@ -2,6 +2,7 @@ package linkedlist
 
 import (
 	"errors"
+
 	"github.com/beglaryh/gocommon/collection/collection_errors"
 	"github.com/beglaryh/gocommon/collection/stream"
 )
@@ -23,6 +24,19 @@ func New[T comparable]() LinkedList[T] {
 	return LinkedList[T]{
 		size: 0,
 	}
+}
+
+func (l *LinkedList[T]) Shift(t T) error {
+	return l.AddAt(t, 0)
+}
+func (l *LinkedList[T]) AddAt(t T, index int) error {
+	node := node[T]{value: t}
+	if index == 0 {
+		node.next = l.head
+		l.head = &node
+	}
+	// TODO for rest
+	return nil
 }
 
 func (l *LinkedList[T]) Add(t ...T) error {
@@ -98,6 +112,10 @@ func (l *LinkedList[T]) Peek() (T, error) {
 	return l.Get(0)
 }
 
+func (l *LinkedList[T]) Poll() (T, error) {
+	return l.Remove(0)
+}
+
 func (l *LinkedList[T]) Remove(index int) (T, error) {
 
 	element, err := l.get(index)
@@ -155,4 +173,14 @@ func (l *LinkedList[T]) ToArray() []T {
 
 func (l *LinkedList[T]) Stream() stream.Stream[T] {
 	return stream.Of[T](l.ToArray())
+}
+
+func (l *LinkedList[T]) Iter(yield func(int, T) bool) {
+	node := l.head
+	for i := range l.Size() {
+		if !yield(i, node.value) {
+			return
+		}
+		node = node.next
+	}
 }

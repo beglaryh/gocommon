@@ -9,4 +9,5 @@ type Collection[T comparable] interface {
 	Clear()
 	Stream() stream.Stream[T]
 	ToArray() []T
+	Iter(yield func(int, T) bool)
 }

@@ -77,3 +77,24 @@ func TestBuilder(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestIter(t *testing.T) {
+	al, _ := New[int]()
+	al.Add(10)
+	al.Add(20)
+	al.Add(30)
+
+	iSumExpected := 3
+	vSumExpected := 60
+	var iSum int
+	var vSum int
+	for i, v := range al.Iter {
+		iSum += i
+		vSum += v
+	}
+
+	if vSum != vSumExpected || iSum != iSumExpected {
+		t.Fail()
+	}
+
+}

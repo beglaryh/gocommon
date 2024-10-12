@@ -106,3 +106,12 @@ func (l *ArrayList[T]) Equals(o *ArrayList[T]) bool {
 func (l *ArrayList[T]) Stream() stream.Stream[T] {
 	return stream.Of[T](l.ToArray())
 }
+
+func (l *ArrayList[T]) Iter(yield func(int, T) bool) {
+	for i := range l.Size() {
+		v, _ := l.Get(i)
+		if !yield(i, v) {
+			return
+		}
+	}
+}
