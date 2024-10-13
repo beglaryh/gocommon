@@ -9,47 +9,39 @@ import (
 
 type PriorityQueue[T comparable] struct {
 	head       *treenode.TreeNode[T]
-	leafs      *linkedlist.LinkedList[*treenode.TreeNode[T]]
 	comparator func(T, T) int
 	size       int
+	vacancies  linkedlist.LinkedList[*treenode.TreeNode[T]]
 }
 
 func New[T comparable](comparator func(T, T) int) *PriorityQueue[T] {
-	ll := linkedlist.New[*treenode.TreeNode[T]]()
+	vacancies := linkedlist.New[*treenode.TreeNode[T]]()
+	var t T
+	ve := treenode.New[T](t)
+	vacancies.Add(ve)
 	return &PriorityQueue[T]{
-		leafs:      &ll,
 		comparator: comparator,
+		vacancies:  vacancies,
+		head:       ve,
 	}
 }
 
 func (pq *PriorityQueue[T]) Add(t ...T) error {
 	for _, e := range t {
-		node := treenode.New[T](e)
-		if pq.IsEmpty() {
-			pq.head = node
-		} else {
-			for {
-				leaf, _ := pq.leafs.Peek()
-				if leaf.IsRich() {
-					pq.leafs.Poll()
-				} else {
-					break
-				}
-			}
-			leaf, _ := pq.leafs.Peek()
 
-			if leaf.Left == nil {
-				leaf.Left = node
-			} else {
-				leaf.Right = node
-				pq.leafs.Poll()
-			}
-			node.Parent = leaf
-		}
-		pq.leafs.Add(node)
+		node, _ := pq.vacancies.Remove(0)
+		node.SetValue(e)
+		left := treenode.Empty[T]()
+		right := treenode.Empty[T]()
+		left.Parent = node
+		right.Parent = node
+		node.Left = left
+		node.Right = right
+		pq.vacancies.Add(left, right)
+
 		pq.size += 1
 		if pq.size > 1 {
-			pq.reorder()
+			pq.reorder(node)
 		}
 	}
 
@@ -61,7 +53,7 @@ func (pq *PriorityQueue[T]) Peek() (T, error) {
 		var t T
 		return t, errors.New("queue is empty")
 	}
-	return pq.head.Value, nil
+	return pq.head.GetValue(), nil
 }
 
 func (pq *PriorityQueue[T]) Poll() (T, error) {
@@ -71,9 +63,10 @@ func (pq *PriorityQueue[T]) Poll() (T, error) {
 		var t T
 		return t, errors.New("queue is empty")
 	}
-
+	pq.head = nil
 	pq.removeAndReorder(node)
-	return node.Value, nil
+	pq.size -= 1
+	return node.GetValue(), nil
 }
 
 func (pq *PriorityQueue[T]) Size() int {
@@ -84,23 +77,10 @@ func (pq *PriorityQueue[T]) IsEmpty() bool {
 	return pq.size == 0
 }
 
-func (pq *PriorityQueue[T]) reorder() {
-	node, _ := pq.leafs.Get(-1)
+func (pq *PriorityQueue[T]) reorder(node *treenode.TreeNode[T]) {
 	parent := node.Parent
-	for parent != nil && pq.comparator(node.Value, parent.Value) > 0 {
-
-		if node != parent.Left {
-			node.Left = parent.Left
-		} else {
-			node.Right = parent.Right
-		}
-		node.Parent = parent.Parent
-		parent.Parent = node
-		parent.Left = nil
-		parent.Right = nil
-		if parent == pq.head {
-			pq.head = node
-		}
+	for parent != nil && pq.comparator(node.GetValue(), parent.GetValue()) > 0 {
+		pq.swap(parent, node)
 		parent = node.Parent
 	}
 
@@ -109,28 +89,57 @@ func (pq *PriorityQueue[T]) reorder() {
 func (pq *PriorityQueue[T]) removeAndReorder(node *treenode.TreeNode[T]) {
 	left := node.Left
 	right := node.Right
-	var selected *treenode.TreeNode[T]
 
-	if left != nil && right != nil {
-		comp := pq.comparator(left.Value, right.Value)
-		if comp > 0 {
-			selected = left
-			pq.removeAndReorder(left)
-			left.Right = right
-			right.Parent = left
-		} else {
-			selected = right
-			pq.removeAndReorder(right)
-			right.Left = left
-			left.Parent = right
+	for !left.IsEmpty() {
+		if !left.IsEmpty() && right.IsEmpty() {
+			if pq.comparator(left.GetValue(), right.GetValue()) > 1 {
+
+			} else {
+
+			}
+
+		} else if !left.IsEmpty() {
+
+		} else if !right.IsEmpty() {
+
 		}
-	} else if left != nil {
-		selected = left
-	} else if right != nil {
-		selected = right
 	}
 
-	if pq.head == node {
-		pq.head = selected
+}
+
+func (pq *PriorityQueue[T]) swap(parent, child *treenode.TreeNode[T]) {
+	leftGrandchild := child.Left
+	rightGrandchild := child.Right
+	grandparent := parent.Parent
+
+	if child == parent.Left {
+		child.Left = parent
+		child.Right = parent.Right
+		parent.Right.Parent = child
+	} else {
+		child.Right = parent
+		child.Left = parent.Left
+		parent.Left.Parent = child
 	}
+
+	child.Parent = grandparent
+	parent.Parent = child
+
+	if grandparent != nil {
+		if grandparent.Left == parent {
+			grandparent.Left = child
+		} else {
+			grandparent.Right = child
+		}
+	}
+	parent.Left = leftGrandchild
+	parent.Right = rightGrandchild
+
+	leftGrandchild.Parent = parent
+	rightGrandchild.Parent = parent
+
+	if parent == pq.head {
+		pq.head = child
+	}
+
 }
