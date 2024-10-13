@@ -63,9 +63,10 @@ func (pq *PriorityQueue[T]) Poll() (T, error) {
 		var t T
 		return t, errors.New("queue is empty")
 	}
-	pq.head = nil
-	pq.removeAndReorder(node)
+
 	pq.size -= 1
+	_ = pq.replace(node)
+
 	return node.GetValue(), nil
 }
 
@@ -86,25 +87,48 @@ func (pq *PriorityQueue[T]) reorder(node *treenode.TreeNode[T]) {
 
 }
 
-func (pq *PriorityQueue[T]) removeAndReorder(node *treenode.TreeNode[T]) {
+func (pq *PriorityQueue[T]) replace(node *treenode.TreeNode[T]) *treenode.TreeNode[T] {
+	if pq.IsEmpty() {
+		pq.head = treenode.Empty[T]()
+		pq.vacancies.Clear()
+		pq.vacancies.Add(pq.head)
+		return nil
+	}
+
 	left := node.Left
 	right := node.Right
 
-	for !left.IsEmpty() {
-		if !left.IsEmpty() && right.IsEmpty() {
-			if pq.comparator(left.GetValue(), right.GetValue()) > 1 {
-
-			} else {
-
-			}
-
-		} else if !left.IsEmpty() {
-
-		} else if !right.IsEmpty() {
-
+	var replacement *treenode.TreeNode[T]
+	if !left.IsEmpty() && !right.IsEmpty() {
+		replacement = left
+		if pq.comparator(left.GetValue(), right.GetValue()) < 0 {
+			replacement = right
 		}
+
+	} else if !left.IsEmpty() {
+		replacement = node.Left
+	} else if !right.IsEmpty() {
+		replacement = node.Right
 	}
 
+	if replacement == nil {
+		return nil
+	}
+	child := pq.replace(replacement)
+
+	if replacement == right {
+		replacement.Left = left
+		replacement.Right = child
+	} else {
+		replacement.Right = left
+		replacement.Left = child
+	}
+
+	if node == pq.head {
+		pq.head = replacement
+	}
+
+	return replacement
 }
 
 func (pq *PriorityQueue[T]) swap(parent, child *treenode.TreeNode[T]) {
