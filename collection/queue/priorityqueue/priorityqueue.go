@@ -119,9 +119,11 @@ func (pq *PriorityQueue[T]) replace(node *treenode.TreeNode[T]) *treenode.TreeNo
 	child := pq.replace(replacement)
 
 	if replacement == right {
+		left.Parent = replacement
 		replacement.Left = left
 		replacement.Right = child
 	} else {
+		right.Parent = replacement
 		replacement.Right = right
 		replacement.Left = child
 	}

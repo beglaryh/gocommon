@@ -13,11 +13,11 @@ type ArrayList[T comparable] struct {
 	limit    int
 }
 
-func New[T comparable]() (*ArrayList[T], error) {
+func New[T comparable]() *ArrayList[T] {
 	al := &ArrayList[T]{
 		elements: make([]T, 10),
 	}
-	return al, nil
+	return al
 }
 
 func (l *ArrayList[T]) ToArray() []T {

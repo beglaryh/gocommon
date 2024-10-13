@@ -9,7 +9,7 @@ import (
 )
 
 func TestArrayList(t *testing.T) {
-	l, _ := New[int]()
+	l := New[int]()
 	if l.Size() != 0 {
 		t.Fail()
 	}
@@ -40,7 +40,7 @@ func TestArrayList(t *testing.T) {
 		t.Fail()
 	}
 
-	l, _ = New[int]()
+	l = New[int]()
 	_ = l.Add(1)
 	_ = l.Add(2)
 	e, _ = l.Remove(0)
@@ -79,7 +79,7 @@ func TestBuilder(t *testing.T) {
 }
 
 func TestIter(t *testing.T) {
-	al, _ := New[int]()
+	al := New[int]()
 	al.Add(10)
 	al.Add(20)
 	al.Add(30)
