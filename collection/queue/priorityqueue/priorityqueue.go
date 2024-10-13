@@ -59,7 +59,7 @@ func (pq *PriorityQueue[T]) Peek() (T, error) {
 func (pq *PriorityQueue[T]) Poll() (T, error) {
 	node := pq.head
 
-	if node == nil {
+	if pq.IsEmpty() {
 		var t T
 		return t, errors.New("queue is empty")
 	}
@@ -112,15 +112,17 @@ func (pq *PriorityQueue[T]) replace(node *treenode.TreeNode[T]) *treenode.TreeNo
 	}
 
 	if replacement == nil {
-		return nil
+		pq.vacancies.RemoveValue(node.Right)
+		return node.Left
 	}
+
 	child := pq.replace(replacement)
 
 	if replacement == right {
 		replacement.Left = left
 		replacement.Right = child
 	} else {
-		replacement.Right = left
+		replacement.Right = right
 		replacement.Left = child
 	}
 
