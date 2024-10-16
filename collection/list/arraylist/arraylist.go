@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/beglaryh/gocommon/collection/collection_errors"
-	"github.com/beglaryh/gocommon/collection/stream"
+	"github.com/beglaryh/gocommon/stream"
 )
 
 type ArrayList[T comparable] struct {

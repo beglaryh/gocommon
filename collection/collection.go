@@ -1,6 +1,6 @@
 package collection
 
-import "github.com/beglaryh/gocommon/collection/stream"
+import "github.com/beglaryh/gocommon/stream"
 
 type Collection[T comparable] interface {
 	Add(t ...T) error

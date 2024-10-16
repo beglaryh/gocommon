@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/beglaryh/gocommon/collection/collection_errors"
-	"github.com/beglaryh/gocommon/collection/stream"
+	"github.com/beglaryh/gocommon/stream"
 )
 
 type node[T comparable] struct {

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/beglaryh/gocommon/collection/list/linkedlist"
+	"github.com/beglaryh/gocommon/stream"
 	"github.com/beglaryh/gocommon/treenode"
 )
 
@@ -76,6 +77,55 @@ func (pq *PriorityQueue[T]) Size() int {
 
 func (pq *PriorityQueue[T]) IsEmpty() bool {
 	return pq.size == 0
+}
+
+func (pq *PriorityQueue[T]) Clear() {
+	nq := New[T](pq.comparator)
+	pq.head = nq.head
+	pq.vacancies = nq.vacancies
+}
+
+func (pq *PriorityQueue[T]) ToArray() []T {
+	arr := make([]T, pq.size)
+	queue := linkedlist.New[*treenode.TreeNode[T]]()
+	queue.Add(pq.head)
+	i := 0
+	for !queue.IsEmpty() {
+		e, _ := queue.Poll()
+		arr[i] = e.GetValue()
+		if !e.Left.IsEmpty() {
+			queue.Add(e.Left)
+		}
+		if !e.Right.IsEmpty() {
+			queue.Add(e.Right)
+		}
+		i += 1
+	}
+	return arr
+}
+
+func (pq *PriorityQueue[T]) Stream() stream.Stream[T] {
+	return stream.Of(pq.ToArray())
+}
+
+func (pq *PriorityQueue[T]) Iter(yield func(int, T) bool) {
+
+	queue := linkedlist.New[*treenode.TreeNode[T]]()
+	queue.Add(pq.head)
+	i := 0
+	for !queue.IsEmpty() {
+		e, _ := queue.Poll()
+		if !yield(i, e.GetValue()) {
+			return
+		}
+		if !e.Left.IsEmpty() {
+			queue.Add(e.Left)
+		}
+		if !e.Right.IsEmpty() {
+			queue.Add(e.Right)
+		}
+		i += 1
+	}
 }
 
 func (pq *PriorityQueue[T]) reorder(node *treenode.TreeNode[T]) {
