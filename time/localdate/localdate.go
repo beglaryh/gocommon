@@ -1,21 +1,22 @@
-package time
+package localdate
 
 import (
-	"github.com/beglaryh/gocommon"
 	"time"
+
+	"github.com/beglaryh/gocommon"
 )
 
 type LocalDate time.Time
 
 var day time.Duration = time.Second * 60 * 60 * 24
 
-func NewLocalDate(year int, month time.Month, day int) LocalDate {
+func New(year int, month time.Month, day int) LocalDate {
 	return LocalDate(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
 }
 
 func CurrentLocalDate() LocalDate {
 	t := time.Now()
-	return NewLocalDate(t.Year(), t.Month(), t.Day())
+	return New(t.Year(), t.Month(), t.Day())
 }
 
 func ParseIsoDate(iso string) (LocalDate, error) {
@@ -61,7 +62,7 @@ func (d LocalDate) PlusMonths(months int) LocalDate {
 	if numYears != 0 {
 		return d.PlusYears(numYears).PlusMonths(numMonths)
 	}
-	d2 := NewLocalDate(d.GetYear(), time.Month(m2), d.GetDay())
+	d2 := New(d.GetYear(), time.Month(m2), d.GetDay())
 	if d2.GetMonth() != time.Month(m2) {
 		d2 = d2.MinusDays(1)
 	}
@@ -73,7 +74,7 @@ func (d LocalDate) MinusMonths(months int) LocalDate {
 }
 
 func (d LocalDate) PlusYears(years int) LocalDate {
-	return NewLocalDate(d.GetYear()+years, d.GetMonth(), d.GetYear())
+	return New(d.GetYear()+years, d.GetMonth(), d.GetYear())
 }
 
 func (d LocalDate) Equals(o LocalDate) bool {
