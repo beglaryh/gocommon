@@ -1,8 +1,8 @@
 package serviceerror
 
 type ServiceError struct {
-	Type    ErrorType
-	Message string
+	errorType ErrorType
+	message   string
 }
 
 type ErrorType int
@@ -13,17 +13,26 @@ const (
 	Internal   = 500
 )
 
-func New(errotType ErrorType, message string) ServiceError {
+var DefaultInternalError ServiceError = ServiceError{
+	errorType: Internal,
+	message:   "internal server error",
+}
+
+func New(errorType ErrorType, message string) ServiceError {
 	return ServiceError{
-		Type:    errotType,
-		Message: message,
+		errorType: errorType,
+		message:   message,
 	}
 }
 
+func (se ServiceError) ErrorType() ErrorType {
+	return se.errorType
+}
+
 func (se ServiceError) Error() string {
-	return se.Message
+	return se.message
 }
 
 func (se ServiceError) StatusCode() int {
-	return int(se.Type)
+	return int(se.errorType)
 }
