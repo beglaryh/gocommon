@@ -1,6 +1,11 @@
 package offsetdatetime
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+
+	"github.com/beglaryh/gocommon"
+)
 
 type OffsetDateTime time.Time
 
@@ -19,4 +24,23 @@ func Parse(s string) (OffsetDateTime, error) {
 
 func (t OffsetDateTime) String() string {
 	return time.Time(t).Format(time.RFC3339)
+}
+
+func (t OffsetDateTime) ToString() gocommon.String {
+	return gocommon.String(t.String())
+}
+
+func (d OffsetDateTime) MarshalJSON() ([]byte, error) {
+	return json.Marshal(d.String())
+}
+
+func (d *OffsetDateTime) UnmarshalJSON(data []byte) error {
+	var str string
+	if err := json.Unmarshal(data, &str); err != nil {
+		return err
+	}
+
+	date, err := Parse(str)
+	*d = date
+	return err
 }

@@ -1,6 +1,7 @@
 package localdate
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/beglaryh/gocommon"
@@ -14,12 +15,12 @@ func New(year int, month time.Month, day int) LocalDate {
 	return LocalDate(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
 }
 
-func CurrentLocalDate() LocalDate {
+func Now() LocalDate {
 	t := time.Now()
 	return New(t.Year(), t.Month(), t.Day())
 }
 
-func ParseIsoDate(iso string) (LocalDate, error) {
+func Parse(iso string) (LocalDate, error) {
 	d, err := time.Parse(time.DateOnly, iso)
 	return LocalDate(d), err
 }
@@ -80,6 +81,26 @@ func (d LocalDate) PlusYears(years int) LocalDate {
 func (d LocalDate) Equals(o LocalDate) bool {
 	return time.Time(d).Sub(time.Time(o)) == 0
 }
-func (d LocalDate) String() gocommon.String {
-	return gocommon.String(time.Time(d).Format(time.DateOnly))
+
+func (d LocalDate) String() string {
+	return time.Time(d).Format(time.DateOnly)
+}
+
+func (d LocalDate) ToString() gocommon.String {
+	return gocommon.String(d.String())
+}
+
+func (d LocalDate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(d.String())
+}
+
+func (d *LocalDate) UnmarshalJSON(data []byte) error {
+	var str string
+	if err := json.Unmarshal(data, &str); err != nil {
+		return err
+	}
+
+	date, err := Parse(str)
+	*d = date
+	return err
 }
