@@ -22,7 +22,7 @@ func (stream Stream[T]) Filter(filter func(t T) bool) Stream[T] {
 	return ns
 }
 
-func Map[F, T comparable](fs []F, mapper func(f F) T) Stream[T] {
+func Map[F, T any](fs []F, mapper func(f F) T) Stream[T] {
 	ns := Stream[T]{}
 	for _, e := range fs {
 		nv := mapper(e)
