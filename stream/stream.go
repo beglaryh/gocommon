@@ -4,7 +4,7 @@ import (
 	"github.com/beglaryh/gocommon/optional"
 )
 
-type Stream[T comparable] struct {
+type Stream[T any] struct {
 	ts []T
 }
 
@@ -57,7 +57,7 @@ func (stream Stream[T]) Slice() []T {
 	return stream.ts
 }
 
-func peek[T comparable](s Stream[T], peekFunc func(t T)) {
+func peek[T any](s Stream[T], peekFunc func(t T)) {
 	for _, t := range s.ts {
 		peekFunc(t)
 	}
@@ -76,7 +76,7 @@ func (stream Stream[T]) Reduce(identity T, reduce func(a, b T) T) T {
 }
 
 func (stream Stream[T]) Sort(sortFunction func(a, b T) bool) Stream[T] {
-	ns := mergeSort[T](stream.ts, sortFunction)
+	ns := mergeSort(stream.ts, sortFunction)
 	return Stream[T]{ts: ns}
 }
 
@@ -102,7 +102,7 @@ func (stream Stream[T]) FindFirst() optional.Optional[T] {
 	if len(stream.ts) == 0 {
 		return optional.Empty[T]()
 	}
-	return optional.With[T](stream.ts[0])
+	return optional.With(stream.ts[0])
 }
 
 func (stream Stream[T]) ForEach(forEach func(t T)) {
