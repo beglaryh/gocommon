@@ -112,7 +112,7 @@ func TestFlatMap(t *testing.T) {
 	numbers := [][]int{{1, 2, 3}, {4, 5, 6}}
 	flattened := FlatMap[int](numbers).Slice()
 	expected := []int{1, 2, 3, 4, 5, 6}
-	if reflect.DeepEqual(expected, flattened) {
+	if !reflect.DeepEqual(expected, flattened) {
 		t.Fail()
 	}
 }
@@ -134,7 +134,7 @@ func TestStream_ForEach(t *testing.T) {
 		forEach = append(forEach, s)
 	})
 	expected := []string{"Hello", "World"}
-	if reflect.DeepEqual(expected, forEach) {
+	if !reflect.DeepEqual(expected, forEach) {
 		t.Fail()
 	}
 }

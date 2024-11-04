@@ -73,7 +73,7 @@ func TestBuilder(t *testing.T) {
 	}
 
 	l, _ = NewBuilder[int]().WithElements([]int{1, 2, 3, 4}).Build()
-	if !reflect.DeepEqual([]int{1, 2, 3, 4}, l.elements) {
+	if !reflect.DeepEqual([]int{1, 2, 3, 4}, l.ToArray()) {
 		t.Fail()
 	}
 }

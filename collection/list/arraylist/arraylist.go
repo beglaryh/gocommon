@@ -66,6 +66,9 @@ func (l *ArrayList[T]) Remove(index int) (T, error) {
 
 func (l *ArrayList[T]) RemoveValue(t T) int {
 	for i, v := range l.elements {
+		if i == l.size {
+			break
+		}
 		if v == t {
 			_, _ = l.Remove(i)
 			return i
@@ -87,7 +90,6 @@ func (l *ArrayList[T]) Get(i int) (T, error) {
 }
 
 func (l *ArrayList[T]) Clear() {
-	l.elements = make([]T, 10)
 	l.size = 0
 }
 
@@ -100,11 +102,11 @@ func (l *ArrayList[T]) IsEmpty() bool {
 }
 
 func (l *ArrayList[T]) Equals(o *ArrayList[T]) bool {
-	return reflect.DeepEqual(l, o)
+	return reflect.DeepEqual(l.ToArray(), o.ToArray())
 }
 
 func (l *ArrayList[T]) Stream() stream.Stream[T] {
-	return stream.Of[T](l.ToArray())
+	return stream.Of(l.ToArray())
 }
 
 func (l *ArrayList[T]) Iter(yield func(int, T) bool) {
