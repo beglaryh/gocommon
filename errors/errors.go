@@ -1,8 +1,8 @@
-package serviceerror
+package errors
 
 type ServiceError struct {
-	errorType ErrorType
 	message   string
+	errorType ErrorType
 }
 
 type ErrorType int
@@ -21,6 +21,27 @@ var DefaultInternalError ServiceError = ServiceError{
 func New(errorType ErrorType, message string) ServiceError {
 	return ServiceError{
 		errorType: errorType,
+		message:   message,
+	}
+}
+
+func NewInternal(message string) ServiceError {
+	return ServiceError{
+		errorType: Internal,
+		message:   message,
+	}
+}
+
+func NewBadRequest(message string) ServiceError {
+	return ServiceError{
+		errorType: BadRequest,
+		message:   message,
+	}
+}
+
+func NewNotFound(message string) ServiceError {
+	return ServiceError{
+		errorType: NotFound,
 		message:   message,
 	}
 }
