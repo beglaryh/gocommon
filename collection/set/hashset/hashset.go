@@ -50,7 +50,7 @@ func (s *HashSet[T]) Clear() {
 	s.set = map[T]bool{}
 }
 
-func (s *HashSet[T]) Stream() stream.Stream[T] {
+func (s *HashSet[T]) Stream() *stream.Stream[T] {
 	return stream.Of(s.ToArray())
 }
 

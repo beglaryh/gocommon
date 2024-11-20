@@ -105,7 +105,7 @@ func (l *ArrayList[T]) Equals(o *ArrayList[T]) bool {
 	return reflect.DeepEqual(l.ToArray(), o.ToArray())
 }
 
-func (l *ArrayList[T]) Stream() stream.Stream[T] {
+func (l *ArrayList[T]) Stream() *stream.Stream[T] {
 	return stream.Of(l.ToArray())
 }
 

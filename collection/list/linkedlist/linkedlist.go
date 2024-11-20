@@ -29,6 +29,7 @@ func New[T comparable]() LinkedList[T] {
 func (l *LinkedList[T]) Shift(t T) error {
 	return l.AddAt(t, 0)
 }
+
 func (l *LinkedList[T]) AddAt(t T, index int) error {
 	node := node[T]{value: t}
 	if index == 0 {
@@ -71,15 +72,14 @@ func (l *LinkedList[T]) get(index int) (*node[T], error) {
 	var element *node[T]
 	if x < 0.5 {
 		element = l.head
-		for _ = range index - 1 {
+		for range index - 1 {
 			element = element.next
 		}
 	} else {
 		index = l.size - index - 1
 		element = l.tail
-		for _ = range index {
+		for range index {
 			element = element.prev
-
 		}
 	}
 	return element, nil
@@ -117,7 +117,6 @@ func (l *LinkedList[T]) Poll() (T, error) {
 }
 
 func (l *LinkedList[T]) Remove(index int) (T, error) {
-
 	element, err := l.get(index)
 	if err != nil {
 		var t T
@@ -171,8 +170,8 @@ func (l *LinkedList[T]) ToArray() []T {
 	return arr
 }
 
-func (l *LinkedList[T]) Stream() stream.Stream[T] {
-	return stream.Of[T](l.ToArray())
+func (l *LinkedList[T]) Stream() *stream.Stream[T] {
+	return stream.Of(l.ToArray())
 }
 
 func (l *LinkedList[T]) Iter(yield func(int, T) bool) {

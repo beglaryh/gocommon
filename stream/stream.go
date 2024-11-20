@@ -8,38 +8,45 @@ type Stream[T any] struct {
 	ts []T
 }
 
-func Of[T comparable](ts []T) Stream[T] {
-	return Stream[T]{ts: ts}
+func Of[T comparable](ts []T) *Stream[T] {
+	return &Stream[T]{ts: ts}
 }
 
-func (stream Stream[T]) Filter(filter func(t T) bool) Stream[T] {
+func (stream *Stream[T]) Filter(filter func(t T) bool) *Stream[T] {
 	ns := Stream[T]{}
 	for _, t := range stream.ts {
 		if filter(t) {
 			ns.ts = append(ns.ts, t)
 		}
 	}
-	return ns
+	return &ns
 }
 
-func Map[F, T any](fs []F, mapper func(f F) T) Stream[T] {
-	ns := Stream[T]{}
-	for _, e := range fs {
-		nv := mapper(e)
-		ns.ts = append(ns.ts, nv)
+func Map[F, T any](fs []F, mapper func(f F) T) *Stream[T] {
+	ns := Stream[T]{
+		ts: make([]T, len(fs)),
 	}
-	return ns
+	for i, e := range fs {
+		ns.ts[i] = mapper(e)
+	}
+	return &ns
 }
 
-func FlatMap[T comparable](input [][]T) Stream[T] {
-	var ts []T
+func FlatMap[T any](input [][]T) *Stream[T] {
+	totalLength := len(input) * len(input[0])
+	ts := make([]T, totalLength)
+
+	counter := 0
 	for _, array := range input {
-		ts = append(ts, array...)
+		for _, e := range array {
+			ts[counter] = e
+			counter += 1
+		}
 	}
-	return Stream[T]{ts: ts}
+	return &Stream[T]{ts: ts}
 }
 
-func GroupBy[K comparable, T comparable](ts []T, getKey func(t T) K) map[K][]T {
+func GroupBy[K comparable, T any](ts []T, getKey func(t T) K) map[K][]T {
 	response := map[K][]T{}
 	for _, t := range ts {
 		key := getKey(t)
@@ -48,22 +55,22 @@ func GroupBy[K comparable, T comparable](ts []T, getKey func(t T) K) map[K][]T {
 	return response
 }
 
-func (stream Stream[T]) Peek(peekFunc func(t T)) Stream[T] {
+func (stream *Stream[T]) Peek(peekFunc func(t T)) *Stream[T] {
 	go peek(stream, peekFunc)
 	return stream
 }
 
-func (stream Stream[T]) Slice() []T {
+func (stream *Stream[T]) Slice() []T {
 	return stream.ts
 }
 
-func peek[T any](s Stream[T], peekFunc func(t T)) {
+func peek[T any](s *Stream[T], peekFunc func(t T)) {
 	for _, t := range s.ts {
 		peekFunc(t)
 	}
 }
 
-func (stream Stream[T]) Reduce(identity T, reduce func(a, b T) T) T {
+func (stream *Stream[T]) Reduce(identity T, reduce func(a, b T) T) T {
 	var a T
 	for i, e := range stream.ts {
 		if i == 0 {
@@ -75,12 +82,12 @@ func (stream Stream[T]) Reduce(identity T, reduce func(a, b T) T) T {
 	return a
 }
 
-func (stream Stream[T]) Sort(sortFunction func(a, b T) bool) Stream[T] {
+func (stream *Stream[T]) Sort(sortFunction func(a, b T) bool) *Stream[T] {
 	ns := mergeSort(stream.ts, sortFunction)
-	return Stream[T]{ts: ns}
+	return &Stream[T]{ts: ns}
 }
 
-func (stream Stream[T]) AnyMatch(anyFunction func(t T) bool) bool {
+func (stream *Stream[T]) AnyMatch(anyFunction func(t T) bool) bool {
 	for _, e := range stream.ts {
 		if anyFunction(e) {
 			return true
@@ -89,7 +96,7 @@ func (stream Stream[T]) AnyMatch(anyFunction func(t T) bool) bool {
 	return false
 }
 
-func (stream Stream[T]) NoneMatch(anyFunction func(t T) bool) bool {
+func (stream *Stream[T]) NoneMatch(anyFunction func(t T) bool) bool {
 	for _, e := range stream.ts {
 		if anyFunction(e) {
 			return false
@@ -98,14 +105,14 @@ func (stream Stream[T]) NoneMatch(anyFunction func(t T) bool) bool {
 	return true
 }
 
-func (stream Stream[T]) FindFirst() optional.Optional[T] {
+func (stream *Stream[T]) FindFirst() optional.Optional[T] {
 	if len(stream.ts) == 0 {
 		return optional.Empty[T]()
 	}
 	return optional.With(stream.ts[0])
 }
 
-func (stream Stream[T]) ForEach(forEach func(t T)) {
+func (stream *Stream[T]) ForEach(forEach func(t T)) {
 	for _, t := range stream.ts {
 		forEach(t)
 	}

@@ -104,12 +104,11 @@ func (pq *PriorityQueue[T]) ToArray() []T {
 	return arr
 }
 
-func (pq *PriorityQueue[T]) Stream() stream.Stream[T] {
+func (pq *PriorityQueue[T]) Stream() *stream.Stream[T] {
 	return stream.Of(pq.ToArray())
 }
 
 func (pq *PriorityQueue[T]) Iter(yield func(int, T) bool) {
-
 	queue := linkedlist.New[*treenode.TreeNode[T]]()
 	queue.Add(pq.head)
 	i := 0
@@ -134,7 +133,6 @@ func (pq *PriorityQueue[T]) reorder(node *treenode.TreeNode[T]) {
 		pq.swap(parent, node)
 		parent = node.Parent
 	}
-
 }
 
 func (pq *PriorityQueue[T]) replace(node *treenode.TreeNode[T]) *treenode.TreeNode[T] {
@@ -219,5 +217,4 @@ func (pq *PriorityQueue[T]) swap(parent, child *treenode.TreeNode[T]) {
 	if parent == pq.head {
 		pq.head = child
 	}
-
 }

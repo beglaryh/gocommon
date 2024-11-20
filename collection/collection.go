@@ -7,7 +7,7 @@ type Collection[T comparable] interface {
 	Size() int
 	IsEmpty() bool
 	Clear()
-	Stream() stream.Stream[T]
+	Stream() *stream.Stream[T]
 	ToArray() []T
 	Iter(yield func(int, T) bool)
 }
