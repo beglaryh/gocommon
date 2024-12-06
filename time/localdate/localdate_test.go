@@ -31,6 +31,17 @@ func TestLocalDate(t *testing.T) {
 	}
 }
 
+func TestBeforeAfter(t *testing.T) {
+	date := Now()
+	tomorrow := date.PlusDays(1)
+	if !date.IsBefore(tomorrow) {
+		t.Fail()
+	}
+	if !tomorrow.IsAfter(date) {
+		t.Fail()
+	}
+}
+
 func TestMarshalling(t *testing.T) {
 	m := map[string]LocalDate{"v1": New(2024, time.March, 31)}
 	js, _ := json.Marshal(m)

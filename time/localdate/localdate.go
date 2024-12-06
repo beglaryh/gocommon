@@ -47,11 +47,11 @@ func (d LocalDate) MinusDays(days int) LocalDate {
 }
 
 func (d LocalDate) IsBefore(o LocalDate) bool {
-	return time.Time(d).Sub(time.Time(o)) < 0
+	return time.Time(d).Before(time.Time(o))
 }
 
-func (d LocalDate) isAfter(o LocalDate) bool {
-	return time.Time(d).Sub(time.Time(o)) > 0
+func (d LocalDate) IsAfter(o LocalDate) bool {
+	return time.Time(d).After(time.Time(o))
 }
 
 func (d LocalDate) PlusMonths(months int) LocalDate {

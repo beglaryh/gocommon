@@ -30,6 +30,14 @@ func (t OffsetDateTime) ToString() gocommon.String {
 	return gocommon.String(t.String())
 }
 
+func (t OffsetDateTime) IsBefore(other OffsetDateTime) bool {
+	return time.Time(t).Before(time.Time(other))
+}
+
+func (t OffsetDateTime) IsAfter(other OffsetDateTime) bool {
+	return time.Time(t).After(time.Time(other))
+}
+
 func (d OffsetDateTime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(d.String())
 }
