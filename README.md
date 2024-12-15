@@ -1,23 +1,30 @@
 # GO COMMON
+
+## Description
+
 A simple replication of common java libraries in GO.
 
 Contains basic implementations of the following:
+
 - Collection interface
 - List interface
-    - ArrayList
-    - LinkedList
+  - ArrayList
+  - LinkedList
 - Queue
-    - PriorityQueue (min/max)
-    - FIFO (LinkedList)
+  - PriorityQueue (min/max)
+  - FIFO (LinkedList)
 - Map
-    - HashMap
-    - LinkedHashMap
+  - HashMap
+  - LinkedHashMap
 - Optional
-- Stream 
+- Stream
 - Time
-    - OffsetDateTime
-    - LocalDateTime
+  - OffsetDateTime
+  - LocalDateTime
+- Simple API errors
+- Pagination data-structure
 
+## Notes
 
-# Note
-This is a work in progress. Will gradually support more data structures and additional methods of existing data structures. 
+This is a work in progress. Will gradually support more data structures and additional methods of existing data structures.
+
